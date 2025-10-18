@@ -21,6 +21,7 @@
 Перед запуском установите необходимые библиотеки:
 
 ```bash
+    pip install --upgrade pip
     pip install -r requirements.txt
 ```
 
