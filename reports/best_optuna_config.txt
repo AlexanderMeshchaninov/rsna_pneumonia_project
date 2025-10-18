@@ -1,0 +1,3 @@
+resnet50_tl_optuna_sz512_bs8_lrfc0.0020_lrft7.9e-05_wd3.2e-06_layer3+layer4_none
+val_f1=0.7168
+params={'img_size': 512, 'batch_size': 8, 'lr_fc': 0.0020292214181030924, 'lr_ft': 7.864557912273797e-05, 'weight_decay': 3.2161947858718945e-06, 'unfreeze': 'layer3+layer4', 'scheduler': 'none'}

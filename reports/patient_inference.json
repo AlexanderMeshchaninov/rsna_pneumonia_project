@@ -1,0 +1,22 @@
+{
+  "model_accuracy_percent": 73.019,
+  "items": [
+    {
+      "dicom_file": "alexander.dcm",
+      "patient_meta": {
+        "age": 0.0,
+        "sex": "M",
+        "view_position": "Unknown",
+        "spacing_x": 0.14111110568,
+        "spacing_y": 0.14111110568
+      },
+      "predicted_class": "Норма - %",
+      "probabilities": {
+        "Норма - %": 97.413,
+        "Пневмония - %": 0.155,
+        "Патология легких - %": 2.432
+      },
+      "gradcam_visualization": "reports\\gradcam_infer\\alexander\\gradcam_pred_0.png"
+    }
+  ]
+}
