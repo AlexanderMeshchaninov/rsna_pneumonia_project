@@ -4,13 +4,15 @@
 
 ## Описание проекта
 
-Цель проекта — построить модель глубокого обучения, которая классифицирует рентгеновские снимки грудной клетки по трем категориям:  
-- **Normal** — без патологии  
-- **Lung Opacity** — признаки пневмонии  
-- **No Lung Opacity / Not Normal** — другие патологии, не пневмония  
+Цель проекта - построить модель глубокого обучения, которая классифицирует рентгеновские снимки грудной клетки по трем категориям:
+- **Normal** - без патологии
+- **Lung Opacity** - признаки пневмонии
+- **No Lung Opacity / Not Normal** - другие патологии, не пневмония
 
-Проект основан на датасете из соревнования [RSNA Pneumonia Detection Challenge (Kaggle, 2018)](https://www.kaggle.com/c/rsna-pneumonia-detection-challenge).  
-Используется упрощенная постановка задачи — **классификация** снимков (без детекции bounding boxes).  
+Проект основан на датасете из соревнования [RSNA Pneumonia Detection Challenge (Kaggle, 2018)](https://www.kaggle.com/c/rsna-pneumonia-detection-challenge).
+Используется упрощенная постановка задачи - **классификация** снимков (без детекции bounding boxes).
+
+Математические операции выполнялись на видео карте: RTX 3060 (Cuda version: 12.4)
 
 ---
 
@@ -30,6 +32,7 @@
 
     # 2) поставить зависимости именно в это окружение
     py -m pip install --upgrade pip
+    py -m pip install --index-url https://download.pytorch.org/whl/cu124 torch torchvision torchaudio
     py -m pip install -r requirements.txt
 
     # 3) привязать Jupyter к этому окружению
@@ -37,9 +40,14 @@
     py -m ipykernel install --user --name rsna-pneumonia
 ```
 
-## Запуск проекта
+## Запуск проекта (пункт обязателен)
 
-- [Скачать данные](https://disk.yandex.ru/d/se8unO6X9aZV0Q) и разместить папки data и models в корне проекта.
+- [Скачать данные](https://disk.yandex.ru/d/se8unO6X9aZV0Q) и разместить папки data и models (обученные модели) в корне проекта.
+
+Особенно необходимы (если скачивать с Kaggle):
+- stage_2_test_images
+- stage_2_train_images
+- stage_2_detailed_class_info.csv
 
 ### Запустить ноутбуки по порядку:
 
@@ -52,28 +60,28 @@
 ## Структура проекта
 
 ```bash
-rsna_pneumonia_project/
-│
-├── data/ # данные (в git не хранятся)
-│ ├── raw/ # исходные Kaggle-данные (DICOM + CSV), папка со снимком автора
-│ └── processed/ # PNG, train/val/test сплиты
-│
-├── models/ # сохраненные веса моделей по этапам (*.pth) (в git не хранятся)
-│
-├── notebooks/ # ноутбуки по шагам
-│ ├── 01_eda.ipynb
-│ ├── 02_baseline_resnet.ipynb
-│ ├── 03_transfer_learning.ipynb
-│ ├── 04_training_with_meta.ipynb
-│ └── 05_final_pipeline.ipynb
-│
-├── reports/ # результаты (графики, метрики, финальный пайплайн)
-│ ├── figures/ # матрицы ошибок, grad-cam снимки моделей
-│
-├── src # весь код проекта
-│
-├── README.md # описание проекта
-└── requirements.txt # зависимости
+    rsna_pneumonia_project/
+    │
+    ├── data/ # данные (в git не хранятся)
+    │ ├── raw/ # исходные Kaggle-данные (DICOM + CSV), папка со снимком автора
+    │ └── processed/ # PNG, train/val/test сплиты
+    │
+    ├── models/ # сохраненные веса моделей по этапам (*.pth) (в git не хранятся)
+    │
+    ├── notebooks/ # ноутбуки по шагам
+    │ ├── 01_eda.ipynb
+    │ ├── 02_baseline_resnet.ipynb
+    │ ├── 03_transfer_learning.ipynb
+    │ ├── 04_training_with_meta.ipynb
+    │ └── 05_final_pipeline.ipynb
+    │
+    ├── reports/ # результаты (графики, метрики, финальный пайплайн)
+    │ ├── figures/ # матрицы ошибок, grad-cam снимки моделей
+    │
+    ├── src # весь код проекта
+    │
+    ├── README.md # описание проекта
+    └── requirements.txt # зависимости
 ```
 
 ## Проект состоит из следующих этапов:
@@ -136,13 +144,42 @@ rsna_pneumonia_project/
 
 ---
 
+### Пример вывода Grad-cam (куда смотрит модель):
+
+<img src='images/grad_cam_images.png'>
+
+### Пример финального заключения модели:
+```json
+    {
+    "model_accuracy_percent": 73.019,
+    "items": [
+        {
+        "dicom_file": "alexander.dcm",
+        "patient_meta": {
+            "age": 0.0,
+            "sex": "M",
+            "view_position": "Unknown",
+            "spacing_x": 0.14111110568,
+            "spacing_y": 0.14111110568
+        },
+        "predicted_class": "Норма - %",
+        "probabilities": {
+            "Норма - %": 97.413,
+            "Пневмония - %": 0.155,
+            "Патология легких - %": 2.432
+        },
+        "gradcam_visualization": "reports\\gradcam_infer\\alexander\\gradcam_pred_0.png"
+        }
+    ]
+    }
+```
 ## Используемые технологии
 - Python 3.12+
-- PyTorch, Torchvision
+- PyTorch, Torchvision (работа с нейронными сетями)
 - Pydicom (чтение медицинских снимков)
 - Pandas, NumPy
-- Scikit-learn (метрики: ROC-AUC, F1-score)  
-- Matplotlib, Seaborn
-- Grad-CAM для интерпретации
-- Optuna
-- tqdm
+- Scikit-learn (метрики: ROC-AUC, F1-score)
+- Matplotlib, Seaborn (графики)
+- Grad-CAM (интерпретации модели)
+- Optuna (гиперпараметры)
+- tqdm (прогресс бары)
