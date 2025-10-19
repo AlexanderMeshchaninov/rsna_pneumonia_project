@@ -21,8 +21,20 @@
 Перед запуском установите необходимые библиотеки:
 
 ```bash
+    # 1) создать и активировать окружение
+    py -m venv .venv
+    # Windows:
+    .venv\Scripts\activate
+    # macOS/Linux:
+    source .venv/bin/activate
+
+    # 2) поставить зависимости именно в это окружение
     py -m pip install --upgrade pip
-    pip install -r requirements.txt
+    py -m pip install -r requirements.txt
+
+    # 3) привязать Jupyter к этому окружению
+    py -m pip install ipykernel
+    py -m ipykernel install --user --name rsna-pneumonia
 ```
 
 ## Запуск проекта
