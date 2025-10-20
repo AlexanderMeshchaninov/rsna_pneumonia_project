@@ -63,6 +63,7 @@
     rsna_pneumonia_project/
     │
     ├── images # изображения для readme.md
+    │
     ├── data/ # данные (в git не хранятся)
     │ ├── raw/ # исходные Kaggle-данные (DICOM + CSV), папка со снимком автора
     │ └── processed/ # PNG, train/val/test сплиты
